@@ -1,0 +1,11 @@
+#Hello search engine
+#I am robots.txt
+#I am very happy to be crawled
+
+User-agent: Mediapartners-Google
+Disallow: 
+
+User-agent: *
+Disallow: 
+
+Sitemap: http://localhost:8074/sisteminformasi/premium/AbsensiOnlineV1/sitemap.xml

@@ -1,0 +1,10 @@
+/* Scroll Indicator Load */
+.progress-container{width:100%;position:fixed;top:0;left:0;z-index:9999}.progress-bar{height:5px;background:#005CAA;width:0%}
+
+/* Scroll Bar Page Element */
+html{scrollbar-width:thin}
+html::-webkit-scrollbar{width:5px;background-color:#F5F5F5}
+html::-webkit-scrollbar-thumb{background-color:#005CAA;border-radius:0px}
+.element{scrollbar-width:thin}
+.element::-webkit-scrollbar{width:5px;background-color:#F5F5F5}
+.element::-webkit-scrollbar-thumb{background-color:#005CAA;border-radius:0px}

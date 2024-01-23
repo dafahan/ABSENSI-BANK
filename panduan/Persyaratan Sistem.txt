@@ -1,0 +1,12 @@
+PHP Versi 7.4+ (dibawah versi 8)
+MySQL 5.1+
+mod_rewrite Apache
+MySQLi PHP Extension
+PDO and MySQLI extension
+cURL PHP Extension
+OpenSSL PHP Extension
+MBString PHP Extension
+GD PHP Extension
+Zip PHP Extension
+allow_url_fopen enabled
+SMTP Mail Server (optional)
