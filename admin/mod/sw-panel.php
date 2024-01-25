@@ -41,8 +41,26 @@ echo'<aside class="main-sidebar">
       if($mod =='absensi'){echo'<li class="active">'; }else{echo'<li>';}
       echo'<a href="./setting"><i class="fa fa-file-text" aria-hidden="true"></i> <span>Data Laporan</span></a></li>';
 
-      if($mod =='kpi'){echo'<li class="active">'; }else{echo'<li>';}
-      echo'<a href="./kpi"><i class="fa fa-file-text" aria-hidden="true"></i> <span>Data KPI</span></a></li>';
+      if($mod =='kpi' OR $mod=='target'){echo'<li class="active treeview">'; }else{
+        echo'<li class="treeview">';}
+        echo'
+            <a href="#">
+              <i class="fa fa fa-file-text"></i> <span>Data KPI</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">';
+              if($mod =='target'){echo'<li class="active">'; }else{echo'<li>';}
+               echo'<a href="./target"><i class="fa fa-circle-o"></i> Target Penilaian</a></li>';
+              if($mod =='jabatan'){echo'<li class="active">'; }else{echo'<li>';}
+               echo'<a href="./jabatan"><i class="fa fa-circle-o"></i> Data Jabatan</a></li>';
+              if($mod =='shift'){echo'<li class="active">'; }else{echo'<li>';}
+               echo'<a href="shift"><i class="fa fa-circle-o"></i> Data Jam Kerja</a></li>';
+              if($mod =='lokasi'){echo'<li class="active">'; }else{echo'<li>';}
+               echo'<a href="./lokasi"><i class="fa fa-circle-o"></i> Data Lokasi</a></li>
+            </ul>
+          </li>'; 
 
       if($mod =='user'){echo'<li class="active">'; }else{echo'<li>';}
       echo'<a href="./user"><i class="fa fa-user"></i> <span>Administrator</span></a></li>';?>

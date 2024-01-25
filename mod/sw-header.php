@@ -120,7 +120,11 @@ echo'
     <link rel="stylesheet" href="'.$site_url.'/mod/assets/js/plugins/datatables/dataTables.bootstrap.css">
     <link rel="stylesheet" href="'.$site_url.'/mod/assets/js/plugins/magnific-popup/magnific-popup.css">';
   }
-
+  if($mod =='kpi'){
+    echo`
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    `;
+    }
 echo'
 </head>
 
@@ -153,7 +157,7 @@ if(isset($_COOKIE['COOKIES_MEMBER'])){
               echo'
                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';?>
                 <a class="dropdown-item" onclick="location.href='profile';" href="profile"><ion-icon size="small" name="person-outline"></ion-icon>Profil</a>
-                <a class="dropdown-item" onclick="location.href='logout';" href="logout"><ion-icon size="small" name="log-out-outline"></ion-icon>Keluar</a>
+                <a class="dropdown-item" onclick="location.href='<?php echo $site_url;?>/logout';" href="<?php echo $site_url;?>/logout"><ion-icon size="small" name="log-out-outline"></ion-icon>Keluar</a>
               </div>
             </div>
         </div>
@@ -188,42 +192,49 @@ echo'<!-- App Sidebar -->
                     <div class="listview-title mt-1">MENU UTAMA</div>
                     <ul class="listview flush transparent no-line image-listview">
                         <li>
-                            <a href="./" class="item">
+                            <a href="'.$site_url.'/" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="home-outline"></ion-icon>
                                 </div> Home 
                             </a>
                         </li>
                         <li>
-                            <a href="./profile" class="item">
+                            <a href="'.$site_url.'/profile" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="person-outline"></ion-icon>
                                 </div> Profil
                             </a>
                         </li>
                         <li>
-                            <a href="./present" class="item">
+                            <a href="'.$site_url.'/present" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="scan-outline"></ion-icon>
                                 </div> Absen
                             </a>
                         </li>
                         <li>
-                            <a href="./laporan" class="item">
+                            <a href="'.$site_url.'/kpi" class="item">
+                                <div class="icon-box bg-primary">
+                                    <ion-icon name="file-tray-outline"></ion-icon>
+                                </div> KPI
+                            </a>
+                        </li>
+                        <li>
+                            <a href="'.$site_url.'/laporan" class="item">
                                 <div class="icon-box bg-primary">
                                   <ion-icon name="document-attach-outline"></ion-icon>
                                 </div> Laporan
                             </a>
                         </li>
                         <li>
-                            <a href="./history" class="item">
+                            <a href="'.$site_url.'/history" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="document-text-outline"></ion-icon>
                                 </div> Riwayat
                             </a>
                         </li>
                         <li>
-                            <a href="./logout" class="item">
+                            <a href="'.$site_url.'/logout" class="item">
                                 <div class="icon-box bg-primary">
                                     <ion-icon name="log-out-outline"></ion-icon>
                                 </div> Keluar

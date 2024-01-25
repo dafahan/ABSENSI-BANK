@@ -42,9 +42,17 @@ $mod = "home";
 if(!empty($_GET['mod'])){$mod = mysqli_escape_string($connection,@$_GET['mod']);}
 else {$mod ='home';}
 if(file_exists("mod/$mod.php")){
-    require_once("mod/$mod.php");
+  if($mod=='kpi'&&isset($_GET['year'])){
+    if(isset($_GET['month'])){
+    require_once("mod/kpi/realisasi.php");
+    }else{
+    require_once("mod/kpi/$mod.php");
+    }
+  }
+  else require_once("mod/$mod.php");
 }else{
     require_once("mod/home.php");
   }
+ 
 ob_end_flush();
 ?>

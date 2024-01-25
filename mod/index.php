@@ -3,7 +3,7 @@
 	$fullurl = ($_SERVER['PHP_SELF']);
 	$trimmed = trim($fullurl, ".php");
 	$canonical = rtrim($trimmed, '/' . '/?');
-
+	
 	if(isset($_COOKIE['COOKIES_MEMBER']) && isset($_COOKIE['COOKIES_COOKIES'])){
 	    header("location:./");
 	} else {

@@ -18,7 +18,10 @@ RewriteRule ^oauth/google?$ action/sw-google.php [L]
 # --------------- Index + halaman ------------------------------------
 RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteRule ^$ index.php?mod=home [L]
-RewriteRule ^(.*)$ index.php?mod=$1 [L]
+RewriteRule ^(?!kpi/)(.*)$ index.php?mod=$1 [QSA,L]
+RewriteRule ^kpi/([0-9]+)$ index.php?mod=kpi&year=$1 [QSA,L]
+RewriteRule ^kpi/([0-9]+)/([a-zA-Z]+)$ index.php?mod=kpi&year=$1&month=$2 [QSA,L]
+
 
 </IfModule>
 <IfModule mod_php5.c>

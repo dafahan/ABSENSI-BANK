@@ -587,6 +587,49 @@ echo'
   break;
 
 
+/* -------  LOAD DATA KPI ----------*/
+case 'kpi':
+  
+  echo'<table class="table rounded" id="swdatatable">
+      <thead>
+          <tr>
+              <th scope="col" class="align-middle text-center">Tahun</th>
+              <th scope="col" class="align-middle text-center">Nilai</th>
+              <th scope="col" class="align-middle text-center">Aksi</th>
+          </tr>
+      </thead>
+      <tbody>';
+     
+      $query_tahun ="SELECT tahun,id FROM years WHERE employees_id='$row_user[id]' ORDER BY tahun DESC";
+      $result_tahun = $connection->query($query_tahun);
+      if($result_tahun->num_rows > 0){
+          while ($row_tahun = $result_tahun->fetch_assoc()) {
+        
+          echo'
+          <tr>
+              <th class="text-center">'.$row_tahun['tahun'].'</th>
+              <th class="text-center" scope="row">0</th>
+              <td class="text-center">
+                <a href="./kpi/'.$row_tahun['tahun'].'" class="btn btn-success btn-sm modal-update" ><i class="fas fa-eye"></i></a>
+              </td>
+          </tr>';
+      }}
+      echo'
+      </tbody>
+  </table>';
+       
+  ?>
+  
+  <script>
+    $('#swdatatable').dataTable({
+      "iDisplayLength":35,
+      "aLengthMenu": [[35, 40, 50, -1], [35, 40, 50, "All"]]
+    });
+   
+  </script>
+  <?php
+    break;
+
 // ----------- UPDATE HISTORY -------------------//
 case 'update-history':
   $error = array();

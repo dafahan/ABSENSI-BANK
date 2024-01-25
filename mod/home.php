@@ -41,6 +41,14 @@ if ($mod ==''){
                                 </a>
                             </div>
                             <div class="item">
+                                <a href="./kpi">
+                                    <div class="icon-wrapper bg-success">
+                                        <ion-icon name="file-tray-outline"></ion-icon>
+                                    </div>
+                                    <strong>KPI</strong>
+                                </a>
+                            </div>
+                            <div class="item">
                                 <a href="./laporan">
                                     <div class="icon-wrapper bg-success">
                                        <ion-icon name="document-attach-outline"></ion-icon>
