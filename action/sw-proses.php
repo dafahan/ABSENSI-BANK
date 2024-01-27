@@ -589,7 +589,7 @@ echo'
 
 /* -------  LOAD DATA KPI ----------*/
 case 'kpi':
-  
+  $user_id = epm_decode($_COOKIE['COOKIES_MEMBER']);
   echo'<table class="table rounded" id="swdatatable">
       <thead>
           <tr>
@@ -601,19 +601,41 @@ case 'kpi':
       <tbody>';
      
       $query_tahun ="SELECT tahun,id FROM years WHERE employees_id='$row_user[id]' ORDER BY tahun DESC";
-      $result_tahun = $connection->query($query_tahun);
-      if($result_tahun->num_rows > 0){
-          while ($row_tahun = $result_tahun->fetch_assoc()) {
-        
-          echo'
-          <tr>
-              <th class="text-center">'.$row_tahun['tahun'].'</th>
-              <th class="text-center" scope="row">0</th>
-              <td class="text-center">
-                <a href="./kpi/'.$row_tahun['tahun'].'" class="btn btn-success btn-sm modal-update" ><i class="fas fa-eye"></i></a>
-              </td>
-          </tr>';
-      }}
+    $result_tahun = $connection->query($query_tahun);
+
+    if ($result_tahun->num_rows > 0) {
+        while ($row_tahun = $result_tahun->fetch_assoc()) {
+            $tahun = $row_tahun['tahun'];
+
+            // Fetch the score for the current user_id and year
+            $query_score = "SELECT score FROM item_kpi WHERE user_id = '$user_id' AND year = '$tahun'";
+            $result_score = $connection->query($query_score);
+
+            $nilai = ($result_score->num_rows > 0) ? $result_score->fetch_assoc()['score'] : 'N/A';
+            $keterangan = 'N/A';
+            if ($nilai >= 111 && $nilai <= 120) {
+                $keterangan = 'Sangat Baik';
+            } elseif ($nilai >= 101 && $nilai <= 110) {
+                $keterangan = 'Baik';
+            } elseif ($nilai >= 91 && $nilai <= 100) {
+                $keterangan = 'Cukup Baik';
+            } elseif ($nilai >= 81 && $nilai <= 90) {
+                $keterangan = 'Kurang Baik';
+            } elseif ($nilai >= 0 && $nilai <= 80) {
+                $keterangan = 'Tidak Baik';
+            }
+
+            echo '
+            <tr>
+                <th class="text-center">' . $tahun . '</th>
+                <th class="text-center" scope="row">' . $nilai . ' (' . $keterangan . ')</th>
+                <td class="text-center">
+                    <a href="./kpi/' . $tahun . '" class="btn btn-success btn-sm modal-update" ><i class="fas fa-eye"></i></a>
+                </td>
+            </tr>';
+        }
+    }
+
       echo'
       </tbody>
   </table>';

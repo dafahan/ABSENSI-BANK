@@ -34,18 +34,18 @@ foreach ($months as $index => $month) {
         // For January
         $data[$month]['credit'] = $_POST[$month];
         $data[$month]['bade'] = $_POST['bade'] + $data[$month]['credit'];
-        $data[$month]['badenpl'] = $_POST['badenpl'] - 50000;
-        $data[$month]['par'] = $_POST['npl'] + 7;
+        $data[$month]['badenpl'] = $_POST['badenpl'] - 500000;
         $data[$month]['npl'] = ($data[$month]['badenpl'] / $data[$month]['bade']) * 100;
+        $data[$month]['par'] =$data[$month]['npl'] + 7;
         $data[$month]['badepar'] = ($data[$month]['par'] / 100) * $data[$month]['bade'];
     } else {
         // For other months
         $prevMonth = $months[$index - 1];
         $data[$month]['credit'] = $_POST[$month];
         $data[$month]['bade'] = $data[$prevMonth]['bade'] + $data[$month]['credit'];
-        $data[$month]['badenpl'] = $data[$prevMonth]['badenpl'] - 50000;
-        $data[$month]['par'] = $data[$prevMonth]['npl'] + 7;
+        $data[$month]['badenpl'] = $data[$prevMonth]['badenpl'] - 500000;
         $data[$month]['npl'] = ($data[$month]['badenpl'] / $data[$month]['bade']) * 100;
+        $data[$month]['par'] = $data[$month]['npl'] + 7;
         $data[$month]['badepar'] = ($data[$month]['par'] / 100) * $data[$month]['bade'];
     }
 

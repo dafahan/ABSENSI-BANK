@@ -12,7 +12,7 @@ if (isset($_GET['username'])){
 	$username 	= htmlentities($_GET['username']);
 	$password 	= hash('sha256',$salt.$_GET['password']);
 	$session	= md5(rand(1000,9999).rand(19078,9999).date('ymdhisss'));
-
+	
 	$update = mysqli_query($connection,"UPDATE user set created_login='$created_login',session='-' where password='$password'") or die (mysqli_error($connection));
 
 $query_login = "SELECT * FROM user WHERE username='$username' AND password='$password'";

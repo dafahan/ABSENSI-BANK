@@ -53,13 +53,9 @@ echo'<aside class="main-sidebar">
             <ul class="treeview-menu">';
               if($mod =='target'){echo'<li class="active">'; }else{echo'<li>';}
                echo'<a href="./target"><i class="fa fa-circle-o"></i> Target Penilaian</a></li>';
-              if($mod =='jabatan'){echo'<li class="active">'; }else{echo'<li>';}
-               echo'<a href="./jabatan"><i class="fa fa-circle-o"></i> Data Jabatan</a></li>';
-              if($mod =='shift'){echo'<li class="active">'; }else{echo'<li>';}
-               echo'<a href="shift"><i class="fa fa-circle-o"></i> Data Jam Kerja</a></li>';
-              if($mod =='lokasi'){echo'<li class="active">'; }else{echo'<li>';}
-               echo'<a href="./lokasi"><i class="fa fa-circle-o"></i> Data Lokasi</a></li>
-            </ul>
+              if($mod =='laporankpi'){echo'<li class="active">'; }else{echo'<li>';}
+               echo'<a href="./laporankpi"><i class="fa fa-circle-o"></i> Laporan KPI</a></li>
+              </ul>
           </li>'; 
 
       if($mod =='user'){echo'<li class="active">'; }else{echo'<li>';}

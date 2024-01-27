@@ -13,10 +13,10 @@ else{
     if(!empty($_COOKIE['COOKIES_COOKIES'])){$COOKIES_COOKIES=  $_COOKIE['COOKIES_COOKIES'];}
     if(!empty($_COOKIE['COOKIES_MEMBER'])){$COOKIES_MEMBER  =  epm_decode($_COOKIE['COOKIES_MEMBER']);}
 	$query_user = "SELECT * FROM employees where id='$COOKIES_MEMBER'";
+	
     $result_user = $connection->query($query_user);
     $row_user     = $result_user->fetch_assoc();
     extract($row_user);
-
 	if($result_user->num_rows > 0){
 		//echo'Login';
 		//echo $row_user['created_cookies'];

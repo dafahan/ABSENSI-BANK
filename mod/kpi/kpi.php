@@ -13,7 +13,8 @@ if(!isset($_COOKIE['COOKIES_MEMBER']) && !isset($_COOKIE['COOKIES_COOKIES'])){
         session_destroy();
         header("location:./index");
 }else{
-
+    $user_id = epm_decode($_COOKIE['COOKIES_MEMBER']);
+    $year = $_GET['year'];
     
     echo'<!-- App Capsule -->
     <div id="appCapsule">
@@ -37,16 +38,43 @@ if(!isset($_COOKIE['COOKIES_MEMBER']) && !isset($_COOKIE['COOKIES_COOKIES'])){
                         'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
                     ];
-            
-                    foreach ($months as $month) {
+                    
+                    foreach ($months as $key => $month) {
                         echo '<tr>';
                         echo '<th class="text-center">' . $month . '</th>';
                         echo '<td class="text-center">';
                         
-                        echo '<a href="'.$year."/".strtolower($month).'" class="btn btn-success btn-sm modal-update"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>';
+                        if ($key === 0) {
+                            // Always enable the button for Januari
+                            echo '<a href="'.$year."/".strtolower($month).'" class="btn btn-success btn-sm "><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>';
+                        } else {
+                            $prevMonth = $months[$key - 1];
+                            $lowerPrev = strtolower($prevMonth);
+                            // Check if data for the previous month exists
+                            $sqlCheckPrevMonthExistence = "SELECT COUNT(*) as count FROM kpi 
+                                                           WHERE user_id = '$user_id' AND year = '$year' AND month = '$lowerPrev'";
+                            
+                            $resultCheckPrevMonth = $connection->query($sqlCheckPrevMonthExistence);
+                    
+                            if ($resultCheckPrevMonth === false) {
+                                echo "Error checking previous month existence: " . $connection->error;
+                            } else {
+                                $rowCheckPrevMonth = $resultCheckPrevMonth->fetch_assoc();
+                    
+                                if ($rowCheckPrevMonth['count'] > 0) {
+                                    // Data for the previous month exists, enable the button
+                                    echo '<a href="'.$year."/".strtolower($month).'" class="btn btn-success btn-sm modal-update"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>';
+                                } else {
+                                    // Data for the previous month does not exist, disable the button
+                                    echo '<button class="btn btn-sm" disabled><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>';
+                                }
+                            }
+                        }
+                        
                         echo '</td>';
                         echo '</tr>';
                     }
+                    
                     echo '
                     </tbody>
             </table>  
@@ -90,74 +118,7 @@ if(!isset($_COOKIE['COOKIES_MEMBER']) && !isset($_COOKIE['COOKIES_COOKIES'])){
 
 
         <!-- UPDATE ABSENSI  -->
-        <div class="modal fade action-sheet inset" id="modal-show" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index:10000">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Absen Tanggal <span class="status-date badge badge-primary"></span></h5>
-                        <a href="javascript:void(0);" class="close" style="position: absolute;right:15px;top: 10px;"  data-dismiss="modal" aria-hidden="true"><ion-icon name="close-outline"></ion-icon></a>
-                    </div>
-                    <div class="modal-body">
-                        <div class="action-sheet-content">
-
-                            <form id="update-history">
-                                <input type="hidden" name="presence_id" id="presence_id" readonly>
-
-                                <!--<div class="form-group basic">
-                                    <div class="input-wrapper">
-                                        <label class="label">Jam Masuk</label>
-                                        <input type="text" class="form-control" id="timein" name="time_in" value="" required>
-                                        <i class="clear-input">
-                                            <ion-icon name="close-circle"></ion-icon>
-                                        </i>
-                                    </div>
-                                    <span class="small">Format jam ex: 07:30</span>
-                                </div>
-
-                                <div class="form-group basic">
-                                    <div class="input-wrapper">
-                                        <label class="label">Jam Pulang</label>
-                                        <input type="text" class="form-control" name="time_out" id="timeout" value="" required>
-                                        <i class="clear-input">
-                                            <ion-icon name="close-circle"></ion-icon>
-                                        </i>
-                                    </div>
-                                    <span class="small">Format jam ex: 17:00</span>
-                                </div>-->
-
-
-                                <div class="form-group basic">
-                                    <div class="input-wrapper">
-                                        <label class="label">Kehadiran</label>
-                                        <select class="form-control custom-select" name="present_id" id="status" required>';
-                                            $query="SELECT * from present_status order by present_name ASC";
-                                              $result = $connection->query($query);
-                                              while($row = $result->fetch_assoc()) { 
-                                              echo'<option value="'.$row['present_id'].'">'.$row['present_name'].'</option>';
-                                              }echo'
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group basic">
-                                    <label class="label">Keterangan</label>
-                                    <div class="input-wrapper">
-                                    <textarea id="information" rows="2" class="form-control" name="information" placeholder="Keterangan"></textarea>
-                                    </div>
-                                    <span class="small">Kosongkan jika tidak memberi keterangan</span>
-                                </div>
-
-                                <div class="form-group basic">
-                                    <button type="submit" class="btn btn-primary btn-block">Simpan</button>
-                                </div>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- * END UPDATE ABSENSI -->
+        
 
 </div>';
 

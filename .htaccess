@@ -14,6 +14,8 @@ RewriteRule ^sw-proses?$ action/sw-proses.php [L]
 RewriteRule ^print?$ action/sw-print.php [L]
 RewriteRule ^timthumb?$ library/timthumb.php [L]
 RewriteRule ^oauth/google?$ action/sw-google.php [L]
+# Specific Rule for accessing mod/kpi/proses.php
+
 
 # --------------- Index + halaman ------------------------------------
 RewriteCond %{REQUEST_FILENAME} !-f

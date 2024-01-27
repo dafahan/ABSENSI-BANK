@@ -20,7 +20,73 @@ if(!isset($_COOKIE['COOKIES_MEMBER']) && !isset($_COOKIE['COOKIES_COOKIES'])){
     <div class="card">
     <div class="card-body">
       
-           <button type="button" class="btn btn-primary mt-1 btn-sortir"><ion-icon name="add-outline"></ion-icon>Tambah Nilai Realisasi</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Tambah Tahun
+  </button>
+'?>
+
+<?php
+if (isset($_POST['submit'])) {
+    $e_id = epm_decode($_COOKIE['COOKIES_MEMBER']);
+    $tahun_baru = $_POST['tahun'];
+    $checkQuery = "SELECT COUNT(*) as count FROM years WHERE tahun = '$tahun_baru' AND employees_id = '$e_id'";
+    $result = $connection->query($checkQuery);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $count = $row['count'];
+
+        if ($count == 0) {
+            // Entry doesn't exist, insert new record
+            $insertQuery = "INSERT INTO years (tahun, employees_id) VALUES ('$tahun_baru', '$e_id')";
+            $insertResult = $connection->query($insertQuery);
+
+            if ($insertResult === false) {
+                echo "Error inserting record: " . $connection->error;
+            } else {
+                echo "Record inserted successfully!";
+            }
+        } else {
+            echo "Entry already exists!";
+        }
+    } else {
+        echo "Error checking entry: " . $connection->error;
+    }
+    $currentUrl = "http" . (isset($_SERVER['HTTPS']) ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+           header("Location: $currentUrl");
+           exit(); 
+}
+
+?>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tambah tahun</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <form method="post">
+            <input type="number" class="form-control" name="tahun" min="2017" max="2999" required/>
+            <button class="btn btn-primary" type="submit" name="submit">
+                TAMBAH
+            </button>
+        </form>
+        <?php 
+        "this"
+        ?>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<?php echo'
+  
               
     </div>
     </div>
