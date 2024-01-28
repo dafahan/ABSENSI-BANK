@@ -4,11 +4,64 @@ if ($mod ==''){
     header('location:../404');
     echo'kosong';
 }else{
+  $e_id = epm_decode($_COOKIE['COOKIES_MEMBER']);
+
+    if (isset($_POST['submit'])) {
+      $file_name   = $_FILES['file']['name'];
+      $size        = $_FILES['file']['size'];
+      $error       = $_FILES['file']['error'];
+      $tmpName     = $_FILES['file']['tmp_name'];
+      $filepath    = 'content/karyawan/';
+      $valid       = array('pdf', 'doc', 'docx');
+      $nowdate     = date('Y-m-d');
+      var_dump($file_name);
+
+      if (strlen($file_name)) {
+          
+          list($txt, $ext) = explode(".", $file_name);
+          $file_ext = strtolower(substr($file_name, strripos($file_name, '.')));
+
+          
+              if ($size < 10000000) { // Maximum size set to 10 MB
+                  // Perintah pengganti nama files
+                  $file_new   = '' . $row_user['employees_code'] . '-' . strip_tags(md5($file_name)) . '-' . seo_title($nowdate) . '-file' . $file_ext . '';
+                  $pathFile   = $filepath . $file_new;
+
+                  // Example: Insert into 'laporan' table
+                  $insert = "INSERT INTO laporan (files, user_id, status, tanggal) 
+                            VALUES ('$file_new', '$e_id', '', '$nowdate')";
+                  echo '<script>console.log("'.$insert.'");</script>';
+                  if ($connection->query($insert) === false) {
+                      echo 'Pengaturan tidak dapat disimpan, coba ulangi beberapa saat lagi.!';
+                      die($connection->error . __LINE__);
+                  } else {
+                    if (move_uploaded_file($tmpName, $pathFile)) {
+                      echo 'Success: File moved to ' . $pathFile;
+                  } else {
+                      echo 'Error moving file. Error code: ' . $_FILES['file']['error'];
+                      echo 'Destination path: ' . $pathFile;
+                  }
+                  
+                  }
+              } else {
+                  // Jika file melebihi size maksimal
+                  echo 'File terlalu besar, maksimal 10 MB!';
+              }
+          
+      }
+        $currentUrl = "http" . (isset($_SERVER['HTTPS']) ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+             header("Location: $currentUrl");
+             exit(); 
+      
+    }
+    
     include_once 'mod/sw-header.php';
 echo'
   <div class="content-wrapper">';
 switch(@$_GET['op']){ 
     default:
+    
+
 echo'
 <section class="content-header">
   <h1>Data<small> Laporan</small></h1>
@@ -24,20 +77,48 @@ echo'
           <h3 class="box-title"><b>Data Laporan</b></h3>
           <div class="box-tools pull-right">';
             echo'
-            <a href="'.$mod.'&op=edit" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah Baru</a>';
-            echo'
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Tambah Laporan
+  </button>
+            ';
+             echo'
           </div>
         </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <form method="post" enctype="multipart/form-data">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tambah tahun</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <label  for="file">Masukan FIle Laporan (PDF/WORD)</label>
+      <input type="file" name="file" class="form-control" id="file" accept=".pdf, .doc, .docx" required>
+        
+        
+      </div>
+      <div class="modal-footer">
+        <button type="submit" name="submit" class="btn btn-primary">Tambah</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="box-body">
 <table id="swdatatable" class="table table-bordered">
   <thead>
   <tr>
     <th style="width: 10px">No</th>
-    <th>Laporan</th>
+    <th>Tanggal</th>
+    <th>Status</th>
   </tr>
   </thead>
   <tbody>';
-  $query="SELECT employees.*,position.position_name,shift.shift_name,building.name  FROM employees,position,shift,building WHERE employees.position_id=position.position_id AND employees.shift_id=shift.shift_id AND employees.building_id=building.building_id  order by employees.id DESC";
+  $query="SELECT * FROM laporan WHERE user_id = $e_id ORDER BY tanggal; ";
   $result = $connection->query($query);
   if($result->num_rows > 0){
   $no=0;
@@ -46,7 +127,8 @@ echo'
     echo'
     <tr>
       <td class="text-center">'.$no.'</td>
-      <td>'.$row['laporan'].'</td>
+      <td>'.$row['tanggal'].'</td>
+      <td>'.$row['status'].'</td>
     </tr>';}}
   echo'
   </tbody>

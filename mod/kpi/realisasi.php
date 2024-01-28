@@ -142,12 +142,20 @@ if(!isset($_COOKIE['COOKIES_MEMBER']) && !isset($_COOKIE['COOKIES_COOKIES'])){
         echo "No data found for the specified user_id and year.";
         }
         }
-        $tes = $targetDes[0]['badenpl'];
+        $tes = $latestMonthData;
+        if($latestMonthData['month'] = $month ){
+            $scoreBade = $bade/$targetDes[0]['bade']*100;
+            // $tes = $bade;
+            $scoreNpl = 100+ (($targetDes[0]['badenpl']-$badenpl)/$targetDes[0]['badenpl'])*100;
+            $scorePar = 100+ (($targetDes[0]['badepar']-$badepar)/$targetDes[0]['badepar'])*100;
 
-         $scoreBade = $latestMonthData[0]['bade']/$targetDes[0]['bade']*100;
-         $scoreNpl = 100+ (($targetDes[0]['badenpl']-$latestMonthData[0]['badenpl'])/$targetDes[0]['badenpl'])*100;
-         $scorePar = 100+ (($targetDes[0]['badepar']-$latestMonthData[0]['badepar'])/$targetDes[0]['badepar'])*100;
-         $sqlCheckExistence = "SELECT * FROM item_kpi 
+        }else{
+            $scoreBade = $latestMonthData[0]['bade']/$targetDes[0]['bade']*100;
+            $scoreNpl = 100+ (($targetDes[0]['badenpl']-$latestMonthData[0]['badenpl'])/$targetDes[0]['badenpl'])*100;
+            $scorePar = 100+ (($targetDes[0]['badepar']-$latestMonthData[0]['badepar'])/$targetDes[0]['badepar'])*100;
+            
+        }
+        $sqlCheckExistence = "SELECT * FROM item_kpi 
          WHERE year = '$year' AND user_id = '$user_id'";
 
         
@@ -157,6 +165,7 @@ if(!isset($_COOKIE['COOKIES_MEMBER']) && !isset($_COOKIE['COOKIES_COOKIES'])){
          $sqlUpdate = "UPDATE item_kpi 
          SET bade = '$scoreBade', npl = '$scoreNpl', par = '$scorePar'
                  WHERE year = '$year' AND user_id = '$user_id'";
+                // $tes= $sqlUpdate;
          $connection->query($sqlUpdate);
 
 
@@ -164,12 +173,12 @@ if(!isset($_COOKIE['COOKIES_MEMBER']) && !isset($_COOKIE['COOKIES_COOKIES'])){
          $sqlInsert = "INSERT INTO item_kpi (year, bade, npl, par,user_id) 
                  VALUES ('$year', '$scoreBade', '$scoreNpl', '$scorePar', '$user_id')";
          $connection->query($sqlInsert);
-
+           // $tes = $sqlInsert;
          }
 
           $currentUrl = "http" . (isset($_SERVER['HTTPS']) ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-          // header("Location: $currentUrl");
-          // exit(); // Ensure that no further code is executed
+            header("Location: $currentUrl");
+            exit(); // Ensure that no further code is executed
     }
      
     ?>

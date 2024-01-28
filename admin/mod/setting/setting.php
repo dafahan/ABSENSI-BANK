@@ -2,6 +2,7 @@
 if(empty($connection)){
   header('location:../../');
 } else {
+  
   include_once 'mod/sw-panel.php';
 echo'
   <div class="content-wrapper">';
@@ -16,7 +17,29 @@ echo'
     </ol>
 </section>';
 echo'
-<section class="content">
+<section class="content">';
+if (isset($_POST['submit'])) {
+  $status = $_POST['status'];
+  $uid = $_POST['uid'];
+
+          $sqlUpdate = "UPDATE laporan 
+          SET status = '$status'
+                  WHERE id = '$uid'";
+          echo $sqlUpdate;
+          $check = $connection->query($sqlUpdate);
+          
+ 
+         
+          echo '<script type="text/javascript">';
+ echo 'window.location.href="' . $_SERVER['REQUEST_URI'] . '"';
+ echo '</script>';
+ echo '<noscript>';
+ echo '<meta http-equiv="refresh" content="0;url=' . $_SERVER['REQUEST_URI'] . '" />';
+ echo '</noscript>';
+
+
+}
+echo'
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <div class="box box-solid">
@@ -39,7 +62,20 @@ echo'
   </tr>
   </thead>
   <tbody>';
-  $query="SELECT employees.*,position.position_name,shift.shift_name,building.name  FROM employees,position,shift,building WHERE employees.position_id=position.position_id AND employees.shift_id=shift.shift_id AND employees.building_id=building.building_id  order by employees.id DESC";
+  $query = "SELECT employees.*, position.position_name, shift.shift_name, building.name,
+  COUNT(CASE WHEN laporan.status = '' THEN 1 ELSE NULL END) AS empty_status_count
+FROM employees
+LEFT JOIN position ON employees.position_id = position.position_id
+LEFT JOIN shift ON employees.shift_id = shift.shift_id
+LEFT JOIN building ON employees.building_id = building.building_id
+LEFT JOIN laporan ON employees.id = laporan.user_id AND laporan.status = ''
+GROUP BY employees.id
+ORDER BY empty_status_count  DESC;
+;
+    
+";
+
+
   $result = $connection->query($query);
   if($result->num_rows > 0){
   $no=0;
@@ -54,13 +90,13 @@ echo'
       <td>'.$row['position_name'].'</td>
       <td>'.$row['shift_name'].'</td>
       <td>'.$row['name'].'</td>
-      <td>'.$row['laporan'].'</td>
+      <td>'.(($row['empty_status_count']!=null)? $row['empty_status_count']:"0") .' Waiting</td>
       <td class="text-right">
         <div class="btn-group">';
         if($level_user==1){
           echo'
           <div class="btn-group">
-          <a href="./'.$mod.'&op=views&id='.epm_encode($row['id']).'" class="btn btn-warning btn-xs enable-tooltip" title="Detail"><i class="fa fa-eye" aria-hidden="true"></i> Detail</a>
+          <button  class="btn btn-warning btn-xs enable-tooltip" data-toggle="modal" data-target="#detail'.$row['id'].'"><i class="fa fa-eye" aria-hidden="true"></i> Detail</button>
         </div>';}
         else{
         echo'
@@ -72,6 +108,81 @@ echo'
         </div>
 
       </td>
+      <div class="modal fade"  id="detail'.$row['id'].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document"  style="width:80vw;height:90vh;">
+        <div class="modal-content"  style="width:100%;height:100%;">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Detail KPI</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" >';
+          $userId = $row['id'];
+          $currentUrl = "http" . (isset($_SERVER['HTTPS']) ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+          
+          $query = "SELECT * FROM laporan WHERE user_id = $userId AND status=''";
+          $res = $connection->query($query);
+          if ($res->num_rows > 0) {
+          if ($res) {
+            
+            while ($rowres = $res->fetch_assoc()) {
+              echo '<div class="form-group">
+                      <button style="width:100%;" class="btn btn-warning btn-xs enable-tooltip" data-toggle="modal" data-target="#detaillap'.$rowres['id'].'" >
+                        <i class="fa fa-eye" aria-hidden="true"></i> '.$rowres['tanggal'].'
+                      </button>
+                    </div>';
+          
+              echo '<div class="modal fade" id="detaillap'.$rowres['id'].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="position: fixed; z-index: 1051;">
+                      <div class="modal-dialog" role="document" >
+                        <div class="modal-content" >
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">'.$rowres['tanggal'].'</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <form method="post">
+
+                          <div class="modal-body" >
+                              <div class="form-group">
+                                <label for="col1">Files </label>
+                                <a href="'.$currentUrl.'../../../content/karyawan/'.$rowres['files'].'" target="_blank" class="text-primary">Download File</a>
+                              </div>
+                              <select class="form-control" name="status">
+                                <option value=""></option>
+                                <option value="Accepted">Accept</option>
+                                <option value="Rejected">Reject</option>
+                              </select>
+                              <input type="hidden" name="uid" value="'.$rowres['id'].'">
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button name="submit" type="submit" class="btn btn-primary">Save changes</button>
+                          </div>
+                          </form>
+
+                        </div>
+                      </div>
+                    </div>';
+          }
+          
+                
+                
+          }
+          }else{
+            echo 'No Data Found';
+          }
+          ?>
+          
+
+          <?php
+          echo '</div>
+          
+        </div>
+      </div>
+    </div>
+   
     </tr>';}}
   echo'
   </tbody>

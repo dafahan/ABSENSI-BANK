@@ -82,9 +82,9 @@ echo'
   <tbody>';
   $query = "SELECT employees.*, position.position_name, shift.shift_name, building.name, item_kpi.score AS nilai 
           FROM employees
-          INNER JOIN position ON employees.position_id = position.position_id
-          INNER JOIN shift ON employees.shift_id = shift.shift_id
-          INNER JOIN building ON employees.building_id = building.building_id
+          LEFT JOIN position ON employees.position_id = position.position_id
+          LEFT JOIN shift ON employees.shift_id = shift.shift_id
+          LEFT JOIN building ON employees.building_id = building.building_id
           LEFT JOIN item_kpi ON employees.id = item_kpi.user_id
           ORDER BY employees.id DESC";
 

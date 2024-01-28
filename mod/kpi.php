@@ -37,7 +37,6 @@ if (isset($_POST['submit'])) {
         $count = $row['count'];
 
         if ($count == 0) {
-            // Entry doesn't exist, insert new record
             $insertQuery = "INSERT INTO years (tahun, employees_id) VALUES ('$tahun_baru', '$e_id')";
             $insertResult = $connection->query($insertQuery);
 
@@ -68,20 +67,15 @@ if (isset($_POST['submit'])) {
         </button>
       </div>
       <div class="modal-body">
-      <form method="post">
+      <form method="post" >
             <input type="number" class="form-control" name="tahun" min="2017" max="2999" required/>
             <button class="btn btn-primary" type="submit" name="submit">
                 TAMBAH
             </button>
         </form>
-        <?php 
-        "this"
-        ?>
+       
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+     
     </div>
   </div>
 </div>
@@ -95,8 +89,74 @@ if (isset($_POST['submit'])) {
         <div class="section mt-2">
             <div class="section-title">Data Absensi</div>
             <div class="card">
-                <div class="table-responsive">
-                    <div class="loaddatakpi"></div>
+                <div class="table-responsive">';
+
+                $user_id = epm_decode($_COOKIE['COOKIES_MEMBER']);
+  echo'<table class="table rounded" id="swdatatable">
+      <thead>
+          <tr>
+              <th scope="col" class="align-middle text-center">Tahun</th>
+              <th scope="col" class="align-middle text-center">Nilai</th>
+              <th scope="col" class="align-middle text-center">Aksi</th>
+          </tr>
+      </thead>
+      <tbody>';
+     
+      $query_tahun ="SELECT tahun,id FROM years WHERE employees_id='$row_user[id]' ORDER BY tahun DESC";
+    $result_tahun = $connection->query($query_tahun);
+
+    if ($result_tahun->num_rows > 0) {
+        while ($row_tahun = $result_tahun->fetch_assoc()) {
+            $tahun = $row_tahun['tahun'];
+
+            // Fetch the score for the current user_id and year
+            $query_score = "SELECT score FROM item_kpi WHERE user_id = '$user_id' AND year = '$tahun'";
+            $result_score = $connection->query($query_score);
+
+            $nilai = ($result_score->num_rows > 0) ? $result_score->fetch_assoc()['score'] : 'N/A';
+            $keterangan = 'N/A';
+            if ($nilai >= 111 && $nilai <= 120) {
+                $keterangan = 'Sangat Baik';
+            } elseif ($nilai >= 101 && $nilai <= 110) {
+                $keterangan = 'Baik';
+            } elseif ($nilai >= 91 && $nilai <= 100) {
+                $keterangan = 'Cukup Baik';
+            } elseif ($nilai >= 81 && $nilai <= 90) {
+                $keterangan = 'Kurang Baik';
+            } elseif ($nilai >= 0 && $nilai <= 80) {
+                $keterangan = 'Tidak Baik';
+            }
+
+            echo '
+            <tr>
+                <th class="text-center">' . $tahun . '</th>
+                <th class="text-center" scope="row">' . $nilai . ' (' . $keterangan . ')</th>
+                <td class="text-center">
+                    <a href="./kpi/' . $tahun . '" class="btn btn-success btn-sm modal-update" ><i class="fas fa-eye"></i></a>
+                </td>
+            </tr>';
+        }
+    }
+
+      echo'
+      </tbody>
+  </table>';
+       
+  ?>
+  
+  <script>
+    $('#swdatatable').dataTable({
+      "iDisplayLength":35,
+      "aLengthMenu": [[35, 40, 50, -1], [35, 40, 50, "All"]]
+    });
+   
+  </script>
+                
+                
+
+                    
+                    <?php
+                    echo'
                 </div>
             </div>
              <div class="alert alert-warning mt-2" role="alert">
